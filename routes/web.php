@@ -20,11 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/link/create/{position}', [LinkController::class, 'create'])->name('link.create');
-    Route::post('/link/store', [LinkController::class, 'store'])->name('link.store');
-    Route::get('/link/edit/{id}', [LinkController::class, 'edit'])->name('link.edit');
-    Route::post('/link/update', [LinkController::class, 'update'])->name('link.update');
-    Route::post('/link/destroy', [LinkController::class, 'destroy'])->name('link.destroy');
 });
+
+Route::get('/link/create/{position}', [LinkController::class, 'create'])
+    ->middleware('auth')
+    ->name('link.create');
+Route::resource('link', LinkController::class)
+    ->except(['index', 'create'])
+    ->middleware('auth');
 
 require __DIR__.'/auth.php';

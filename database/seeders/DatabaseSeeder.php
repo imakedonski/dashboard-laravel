@@ -20,6 +20,12 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
         ]);
 
+        User::factory()->create([
+            'name' => 'Demo',
+            'email' => 'demo@demo.com',
+            'password' => 'password',
+        ]);
+
         // Colors
         $this->call([
             ColorsSeeder::class,

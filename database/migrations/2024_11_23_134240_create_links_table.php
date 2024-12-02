@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->string('title');
             $table->string('url');
-            $table->unsignedSmallInteger('color_id');
+            $table->foreignIdFor(App\Models\Color::class)->constrained()->cascadeOnDelete();
             $table->unsignedSmallInteger('position');
             $table->timestamps();
             /**
