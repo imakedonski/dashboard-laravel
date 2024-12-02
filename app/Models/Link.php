@@ -30,13 +30,22 @@ class Link extends Model
         return $this->belongsTo(Color::class);
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function ($link) {
+            $link->user_id = auth()->id();
+        });
+    }
+
     /**
      * @return array
      */
-    public static function withPosition()
+    public static function withPosition(): array
     {
         $links_array = array_fill(1, 9, null);
-        $links = self::all()->load('color')->sortBy('position');
+        $links = self::all()
+            ->where('user_id', auth()->id())
+            ->sortBy('position');
         if ($links) {
             foreach ($links as $link) {
                 $links_array[$link->position] = $link;
@@ -44,16 +53,5 @@ class Link extends Model
         }
 
         return $links_array;
-    }
-
-    /**
-     * Checks if the current link belongs to a certain user
-     *
-     * @param int|null $user_id
-     * @return bool
-     */
-    public function ownedBy(?int $user_id = null): bool
-    {
-        return auth()->id() === $this->user_id;
     }
 }

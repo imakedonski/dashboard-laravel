@@ -13,25 +13,27 @@
                             @endif
 
                             @if ($link)
-                            <div class="lg:hidden text-sm md:text-2xl">
-                                <a href="{{ route('link.edit', ['id' => $link->id]) }}" class="text-blue-600">{{ __('Edit') }}</a>
-                                <span class="mx-1">|</span>
-                                <a href="javascript:void(0)" class="text-red-600 delete" data-link-id="{{ $link->id }}">{{ __('Delete') }}</a>
-                            </div>
+                            <div id="link-{{ $link->id }}" data-delete-link="{{ route('link.destroy', ['link' => $link]) }}">
+                                <div class="lg:hidden text-sm md:text-2xl">
+                                    <a href="{{ route('link.edit', ['link' => $link]) }}" class="text-blue-600">{{ __('Edit') }}</a>
+                                    <span class="mx-1">|</span>
+                                    <a href="javascript:void(0)" class="text-red-600 delete" data-link-id="{{ $link->id }}">{{ __('Delete') }}</a>
+                                </div>
 
-                            <div class="hidden lg:block absolute right-2 top-2">
-                                <div class="flex">
-                                    <a href="{{ $link ? route('link.edit', ['id' => $link->id]) : route('link.create', ['position' => $position]) }}" title="{{ __('Edit') }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 mr-2 text-blue-600">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </svg>
-                                    </a>
+                                <div class="hidden lg:block absolute right-2 top-2">
+                                    <div class="flex">
+                                        <a href="{{ $link ? route('link.edit', ['link' => $link]) : route('link.create', ['position' => $position]) }}" title="{{ __('Edit') }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 mr-2 text-blue-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </svg>
+                                        </a>
 
-                                    <a href="javascript:void(0)" title="{{ __('Delete') }}" class="delete" data-link-id="{{ $link->id }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-red-600">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </a>
+                                        <a href="javascript:void(0)" title="{{ __('Delete') }}" class="delete" data-link-id="{{ $link->id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-red-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             @endif
@@ -42,7 +44,6 @@
         </div>
     </div>
     <script>
-        const deleteURL = '{{ route('link.destroy') }}';
         const handlers = document.querySelectorAll('.delete');
 
         Array.from(handlers).map(handler => {
@@ -51,6 +52,8 @@
                 const confirmation = confirm('Are you sure you want to delete this link?');
 
                 if (confirmation) {
+                    let deleteURL = document.getElementById('link-' + e.currentTarget.getAttribute('data-link-id')).getAttribute('data-delete-link')
+                    console.log(deleteURL)
                     try {
                         const response = await fetch(deleteURL, {
                             method: "POST",
